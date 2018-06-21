@@ -1,0 +1,2 @@
+# CloudFormationCognitoCustomResources
+CognitoUserPoolClientSettings and CognitoUserPoolDomain custom resources for CloudFormation.
