@@ -15,7 +15,9 @@ exports.handler = async (event) => {
                     LogoutURLs: [event.ResourceProperties.LogoutURL],
                     AllowedOAuthFlowsUserPoolClient: (event.ResourceProperties.AllowedOAuthFlowsUserPoolClient == 'true'),
                     AllowedOAuthFlows: event.ResourceProperties.AllowedOAuthFlows,
-                    AllowedOAuthScopes: event.ResourceProperties.AllowedOAuthScopes
+                    AllowedOAuthScopes: event.ResourceProperties.AllowedOAuthScopes,
+					ReadAttributes: event.ResourceProperties.ReadAttributes,
+					WriteAttributes: event.ResourceProperties.WriteAttributes
                 }).promise();
                 
                 await sendCloudFormationResponse(event, 'SUCCESS');
