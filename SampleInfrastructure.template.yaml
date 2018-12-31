@@ -52,6 +52,21 @@ Resources:
                 Action: 'cognito-idp:DescribeUserPoolDomain'
                 Resource: '*'
         -
+          PolicyName: ManageUserPoolIdentityProviders
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - 'cognito-idp:CreateIdentityProvider'
+                  - 'cognito-idp:DeleteIdentityProvider'
+                Resource: 'arn:aws:cognito-idp:*:*:userpool/*'
+              -
+                Effect: Allow
+                Action: 'cognito-idp:DescribeIdentityProvider'
+                Resource: '*'
+        -
           PolicyName: InvokeLambdaFunction
           PolicyDocument: 
             Version: '2012-10-17'
@@ -86,6 +101,15 @@ Resources:
       Handler: CloudFormationCognitoUserPoolDomain.handler
       Role: !GetAtt LambdaForCloudFormation.Arn
     DependsOn: CloudFormationSendResponse
+  CloudFormationCognitoUserPoolIdentityProvider:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: CloudFormationCognitoUserPoolIdentityProvider
+      Runtime: nodejs8.10
+      Code: ./CloudFormationCognitoUserPoolIdentityProvider.js
+      Handler: CloudFormationCognitoUserPoolIdentityProvider.handler
+      Role: !GetAtt LambdaForCloudFormation.Arn
+    DependsOn: CloudFormationSendResponse
   UserPoolTest:
     Type: 'AWS::Cognito::UserPool'
     Properties:
@@ -117,3 +141,22 @@ Resources:
       ServiceToken: !GetAtt CloudFormationCognitoUserPoolDomain.Arn
       UserPoolId: !Ref UserPoolTest
       Domain: 'userpool-test-01'
+  UserPoolTestIdentityProvider:
+    Type: 'Custom::CognitoUserPoolIdentityProvider'
+    Properties:
+      ServiceToken: !GetAtt CloudFormationCognitoUserPoolIdentityProvider.Arn
+      UserPoolId: !Ref UserPoolTest
+      ProviderName: Google
+      ProviderType: Google
+      ProviderDetails:
+        authorize_scopes: 'email openid'
+        attributes_url_add_attributes: true
+        token_url: 'https://www.googleapis.com/oauth2/v4/token'
+        oidc_issuer: 'https://accounts.google.com'
+        client_id: '123456789012-12345exampleexampleexampleexampl.apps.googleusercontent.com'
+        attributes_url: 'https://people.googleapis.com/v1/people/me?personFields='
+        client_secret: '1234567890exampleexample'
+        token_request_method: 'POST'
+      AttributeMapping:
+        username: 'sub'
+        email: 'email'
