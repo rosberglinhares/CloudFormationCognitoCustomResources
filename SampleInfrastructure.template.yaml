@@ -52,6 +52,21 @@ Resources:
                 Action: 'cognito-idp:DescribeUserPoolDomain'
                 Resource: '*'
         -
+          PolicyName: ManageUserPoolIdentityProviders
+          PolicyDocument: 
+            Version: '2012-10-17'
+            Statement:
+              -
+                Effect: Allow
+                Action:
+                  - 'cognito-idp:CreateIdentityProvider'
+                  - 'cognito-idp:DeleteIdentityProvider'
+                Resource: 'arn:aws:cognito-idp:*:*:userpool/*'
+              -
+                Effect: Allow
+                Action: 'cognito-idp:DescribeIdentityProvider'
+                Resource: '*'
+        -
           PolicyName: InvokeLambdaFunction
           PolicyDocument: 
             Version: '2012-10-17'
