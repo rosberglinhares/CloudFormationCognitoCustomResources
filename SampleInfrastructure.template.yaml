@@ -101,6 +101,15 @@ Resources:
       Handler: CloudFormationCognitoUserPoolDomain.handler
       Role: !GetAtt LambdaForCloudFormation.Arn
     DependsOn: CloudFormationSendResponse
+  CloudFormationCognitoUserPoolIdentityProvider:
+    Type: 'AWS::Lambda::Function'
+    Properties:
+      FunctionName: CloudFormationCognitoUserPoolIdentityProvider
+      Runtime: nodejs8.10
+      Code: ./CloudFormationCognitoUserPoolIdentityProvider.js
+      Handler: CloudFormationCognitoUserPoolIdentityProvider.handler
+      Role: !GetAtt LambdaForCloudFormation.Arn
+    DependsOn: CloudFormationSendResponse
   UserPoolTest:
     Type: 'AWS::Cognito::UserPool'
     Properties:
